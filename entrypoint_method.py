@@ -44,16 +44,15 @@ def run_method(output_dir, name, input_files, parameters):
 
     content = f"This is the command to run cellranger on the first reference genome\n"
     content += cr_command_1
-    content += "\n"
+    content += "\n\n"
 
 #    content = concatenate_input_content(input_files)
 
     method_mapping_file = os.path.join(output_dir, f'{name}.model.out.txt')
+    content += f"Input files:\n\t"
     content += input_files
-    content += f"\n"
+    content += f"\nOutput directory:\n\t"
     content += output_dir
-    content += f"\n\n3. Running method using parameters '{parameters}' into {method_mapping_file}"
-    content += f"\n4. Testing whether I can write to this file, and open it afterwards"
 
     with open(method_mapping_file, 'w') as file:
         file.write(content)
