@@ -22,12 +22,17 @@ def run_method(output_dir, name, input_files, parameters):
     os.makedirs(output_dir, exist_ok=True)
 
     # Run Cellranger ctrl
-    # cr_command_1 = f"cellranger count --id testing --fastqs {input_files}"
+    # Figure out how to extract reference genome: /data/refdata-gex-GRCh38-2024-A"
+
+    cr_command_1 = f"cellranger count --id testing --fastqs {input_files}"
+    cr_command_1 += f" --output-dir {output_dir} --transcriptome 01_references/refdata-gex-GRCh38-2024-A"
+    cr_command_1 += f" --create-bam true --expect-cells 15000 --localcores 4 --localmem 4"
 
     # orig_fastq_path="/home/projects/dtu_00062/people/sorsan/test1/short_data/"
     # orig_out="/home/projects/dtu_00062/people/sorsan/test1/short_orig_processed_hg38-2024-A"
 
-    # cellranger count --id short_sample_orig --fastqs $orig_fastq_path --output-dir $orig_out --transcriptome $transcriptome_ref --create-bam true --expect-cells 15000 --localcores 28 --localmem 128
+    # cellranger count --id short_sample_orig --fastqs $orig_fastq_path --output-dir $orig_out
+    # --transcriptome $transcriptome_ref --create-bam true --expect-cells 15000 --localcores 28 --localmem 128
 
     # Run Cellranger case 1
 
@@ -37,12 +42,14 @@ def run_method(output_dir, name, input_files, parameters):
 
     # Run Cellranger case 2
 
-    content = f"This is where the information starts\n\n"
+    content = f"This is the command to run cellranger on the first reference genome\n"
+    content += cr_command_1
+    content += "\n"
 
 #    content = concatenate_input_content(input_files)
 
     method_mapping_file = os.path.join(output_dir, f'{name}.model.out.txt')
-    content += input_files[1]
+    content += input_files
     content += f"\n"
     content += output_dir
     content += f"\n\n3. Running method using parameters '{parameters}' into {method_mapping_file}"
