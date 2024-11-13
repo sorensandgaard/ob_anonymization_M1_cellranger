@@ -74,8 +74,8 @@ def main():
 
     input_files = [R1_input, R2_input]
 
-    # run_method(args.output_dir, args.name, input_files, extra_arguments)
-    run_method(args.output_dir, args.name, R1_input, extra_arguments)
+    run_method(args.output_dir, args.name, input_files, extra_arguments)
+    # run_method(args.output_dir, args.name, R1_input, extra_arguments)
 
 
 if __name__ == "__main__":
