@@ -36,7 +36,8 @@ def run_method(output_dir, name, input_files, parameters):
 #    content = concatenate_input_content(input_files)
 
     method_mapping_file = os.path.join(output_dir, f'{name}.model.out.txt')
-    content += f"\n3. Running method using parameters '{parameters}' into {method_mapping_file}"
+    content += input_files
+    content += f"\n\n3. Running method using parameters '{parameters}' into {method_mapping_file}"
     content += f"\n4. Testing whether I can write to this file, and open it afterwards"
 
     with open(method_mapping_file, 'w') as file:
@@ -73,7 +74,8 @@ def main():
 
     input_files = [R1_input, R2_input]
 
-    run_method(args.output_dir, args.name, input_files, extra_arguments)
+    # run_method(args.output_dir, args.name, input_files, extra_arguments)
+    run_method(args.output_dir, args.name, R1_input, extra_arguments)
 
 
 if __name__ == "__main__":
