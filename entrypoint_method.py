@@ -22,6 +22,12 @@ def run_method(output_dir, name, input_files, parameters):
     os.makedirs(output_dir, exist_ok=True)
 
     # Run Cellranger ctrl
+    # cr_command_1 = f"cellranger count --id testing --fastqs {input_files}"
+
+    # orig_fastq_path="/home/projects/dtu_00062/people/sorsan/test1/short_data/"
+    # orig_out="/home/projects/dtu_00062/people/sorsan/test1/short_orig_processed_hg38-2024-A"
+
+    # cellranger count --id short_sample_orig --fastqs $orig_fastq_path --output-dir $orig_out --transcriptome $transcriptome_ref --create-bam true --expect-cells 15000 --localcores 28 --localmem 128
 
     # Run Cellranger case 1
 
@@ -37,6 +43,8 @@ def run_method(output_dir, name, input_files, parameters):
 
     method_mapping_file = os.path.join(output_dir, f'{name}.model.out.txt')
     content += input_files[1]
+    content += f"\n"
+    content += output_dir
     content += f"\n\n3. Running method using parameters '{parameters}' into {method_mapping_file}"
     content += f"\n4. Testing whether I can write to this file, and open it afterwards"
 
@@ -63,6 +71,7 @@ def main():
 
     R1_input = getattr(args, 'R1.counts')
     R2_input = getattr(args, 'R2.counts')
+    fastq_paths = os.path.dirname(R1_input) + f"/"
 
 #    process_filtered_input = getattr(args, 'process.filtered')
 #    data_counts_input = getattr(args, 'data.counts')
@@ -74,8 +83,8 @@ def main():
 
     input_files = [R1_input, R2_input]
 
-    run_method(args.output_dir, args.name, input_files, extra_arguments)
-    # run_method(args.output_dir, args.name, R1_input, extra_arguments)
+    # run_method(args.output_dir, args.name, input_files, extra_arguments)
+    run_method(args.output_dir, args.name, fastq_paths, extra_arguments)
 
 
 if __name__ == "__main__":
