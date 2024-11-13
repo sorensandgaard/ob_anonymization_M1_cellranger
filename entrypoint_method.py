@@ -22,20 +22,22 @@ def run_method(output_dir, name, input_files, parameters):
     os.makedirs(output_dir, exist_ok=True)
 
     # Run Cellranger ctrl
-    print("Testing")
+
     # Run Cellranger case 1
-    print("Testing 2")
+
     # Run Bamboozle case
-    print("Testing 3")
+
     # Run Bamtofastq case
-    print("Testing 4")
+
     # Run Cellranger case 2
-    print("Testing 5")
+
+    content = f"This is where the information starts\n\n"
 
     content = concatenate_input_content(input_files)
 
     method_mapping_file = os.path.join(output_dir, f'{name}.model.out.gz')
     content += f"\n3. Running method using parameters '{parameters}' into {method_mapping_file}"
+    content += f"\n4. Testing whether I can write to this file, and open it afterwards"
 
     with open(method_mapping_file, 'w') as file:
         file.write(content)
