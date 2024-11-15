@@ -36,10 +36,10 @@ def run_method(output_dir, name, input_files, parameters):
     # --transcriptome $transcriptome_ref --create-bam true --expect-cells 15000 --localcores 28 --localmem 128
 
     # Run Cellranger case 1
-    a = subprocess.run(["ls","-lh"],capture_output=True)
+    a = subprocess.run(["ls","-lh"],capture_output=True,test=True)
 
     content = f"This is the output from subprocess.run\n"
-    content += a
+    content += a.stdout
     content += "\n\n"
 
     # Run Bamboozle case
