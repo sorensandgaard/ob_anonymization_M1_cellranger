@@ -36,7 +36,11 @@ def run_method(output_dir, name, input_files, parameters):
     # --transcriptome $transcriptome_ref --create-bam true --expect-cells 15000 --localcores 28 --localmem 128
 
     # Run Cellranger case 1
-    subprocess.run(cr_command_1)
+    a = subprocess.run(["ls","-lh"],capture_output=True)
+
+    content = f"This is the output from subprocess.run\n"
+    content += a
+    content += "\n\n"
 
     # Run Bamboozle case
 
@@ -44,7 +48,7 @@ def run_method(output_dir, name, input_files, parameters):
 
     # Run Cellranger case 2
 
-    content = f"This is the command to run cellranger on the first reference genome\n"
+    content += f"This is the command to run cellranger on the first reference genome\n"
     content += cr_command_1
     content += "\n\n"
 
