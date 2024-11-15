@@ -36,8 +36,8 @@ def run_method(output_dir, name, input_files, parameters):
     # --transcriptome $transcriptome_ref --create-bam true --expect-cells 15000 --localcores 28 --localmem 128
 
     # Run Cellranger case 1
-    a = subprocess.run(["cellranger","count","--help"],capture_output=True,text=True)
-    # a = subprocess.run(cr_command_1.split(),capture_output=True,text=True)
+    # a = subprocess.run(["cellranger","count","--help"],capture_output=True,text=True)
+    a = subprocess.run(cr_command_1.split(),capture_output=True,text=True)
 
 
     content = f"This is the output from subprocess.run\n"
