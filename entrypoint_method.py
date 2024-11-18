@@ -43,13 +43,13 @@ def run_method(output_dir, name, input_files, parameters):
 
 
     # Run Bamtofastq case
-    anon_bam_pos = f"{cr_outdir}"+f"/out/XXX"
-    anon_fastq_pos = f"{cr_outdir}"+f"/out/XXX"
-    bamtofastq_command = f"bamtofastq --nthreads=4 {anon_bam_pos} {anon_fastq_pos}"
-    a = subprocess.run(bamtofastq_command.split(),capture_output=True,text=True)
-    content += f"Bamtofastq output:\n"
-    content += a.stdout
-    content += "\n\n"
+    #anon_bam_pos = f"{cr_outdir}"+f"/out/XXX"
+    #anon_fastq_pos = f"{cr_outdir}"+f"/out/XXX"
+    #bamtofastq_command = f"bamtofastq --nthreads=4 {anon_bam_pos} {anon_fastq_pos}"
+    #a = subprocess.run(bamtofastq_command.split(),capture_output=True,text=True)
+    #content += f"Bamtofastq output:\n"
+    #content += a.stdout
+    #content += "\n\n"
 
     # Run Cellranger case 2
 
