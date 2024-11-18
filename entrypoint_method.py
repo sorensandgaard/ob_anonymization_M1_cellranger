@@ -34,7 +34,9 @@ def run_method(output_dir, name, input_files, parameters):
     ref_pos = f"{ref_dir}"+f"/fasta/genome.fa"
     bamboozle_command = f"BAMboozle --bam {bam_pos} $out --fa {ref_pos}"
     a = subprocess.run(bamboozle_command.split(),capture_output=True,text=True)
-    content += f"Bamboozle output:\n"
+    content += f"Bamboozle command:\n"
+    content += bamboozle_command
+    content += f"\nBamboozle output:\n"
     content += a.stdout
     content += "\n\n"
 
