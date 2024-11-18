@@ -33,11 +33,11 @@ def run_method(output_dir, name, input_files, parameters):
     bam_pos = f"{cr_outdir}"+f"/outs/possorted_genome_bam.bam"
     ref_pos = f"{ref_dir}"+f"/fasta/genome.fa"
     bamboozle_command = f"BAMboozle --bam {bam_pos} $out --fa {ref_pos}"
-    a = subprocess.run(bamboozle_command.split(),capture_output=True,text=True)
+#    a = subprocess.run(bamboozle_command.split(),capture_output=True,text=True)
     content += f"Bamboozle command:\n"
     content += bamboozle_command
     content += f"\nBamboozle output:\n"
-    content += a.stdout
+#    content += a.stdout
     content += "\n\n"
 
     with open(method_mapping_file, 'w') as file:
