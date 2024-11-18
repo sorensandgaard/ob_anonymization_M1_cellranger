@@ -34,25 +34,20 @@ def run_method(output_dir, name, input_files, parameters):
     ref_pos = f"{ref_dir}/fasta/genome.fa"
     anon_bam_pos = f"{cr_outdir}/outs/bamboozled.bam"
     bamboozle_command = f"BAMboozle --bam {bam_pos} --out {anon_bam_pos} --fa {ref_pos}"
+    content += f"Bamboozle command:\n{bamboozle_command}\n"
     a = subprocess.run(bamboozle_command.split(),capture_output=True,text=True)
-    content += f"Bamboozle command:\n"
-    content += bamboozle_command
-    content += f"\nBamboozle output:\n"
-    content += a.stdout
-    content += "\n\n"
+    content += f"Bamboozle output:\n{a.stdout}\n\n"
 
     with open(method_mapping_file, 'w') as file:
         file.write(content)
 
-
     # Run Bamtofastq case
-    #anon_bam_pos = f"{cr_outdir}"+f"/out/XXX"
-    #anon_fastq_pos = f"{cr_outdir}"+f"/out/XXX"
-    #bamtofastq_command = f"bamtofastq --nthreads=4 {anon_bam_pos} {anon_fastq_pos}"
-    #a = subprocess.run(bamtofastq_command.split(),capture_output=True,text=True)
-    #content += f"Bamtofastq output:\n"
-    #content += a.stdout
-    #content += "\n\n"
+    anon_outdir = f"{output_dir}/anon_fastqs"
+    os.makedirs(anon_outdir,exist_ok=True)
+    bamtofastq_command = f"bamtofastq --nthreads=16 {anon_bam_pos} {anon_fastq_pos}"
+    content += f"Bamtofastq command:\n{bamtofastq_command}\n"
+    a = subprocess.run(bamtofastq_command.split(),capture_output=True,text=True)
+    content += f"Bamtofastq output:\n{a.stdout}\n\n"
 
     # Run Cellranger case 2
 
