@@ -9,7 +9,7 @@ def run_method(output_dir, name, input_files, parameters):
 
     # Run Cellranger ctrl
     ref_dir = f"01_references/refdata-gex-GRCh38-2024-A"
-    cr_outdir = f"{output_dir}"+f"/cellranger_out"
+    cr_outdir = f"{output_dir}/cellranger_out"
     os.makedirs(cr_outdir, exist_ok=True)
 
     cr_command_1 = f"cellranger count --id testing --fastqs {input_files}"
@@ -30,14 +30,15 @@ def run_method(output_dir, name, input_files, parameters):
         file.write(content)
 
     # Run Bamboozle case
-    bam_pos = f"{cr_outdir}"+f"/outs/possorted_genome_bam.bam"
-    ref_pos = f"{ref_dir}"+f"/fasta/genome.fa"
-    bamboozle_command = f"BAMboozle --bam {bam_pos} $out --fa {ref_pos}"
-#    a = subprocess.run(bamboozle_command.split(),capture_output=True,text=True)
+    bam_pos = f"{cr_outdir}/outs/possorted_genome_bam.bam"
+    ref_pos = f"{ref_dir}/fasta/genome.fa"
+    anon_bam_pos = f"{cr_outdir}/outs/bamboozled.bam"
+    bamboozle_command = f"BAMboozle --bam {bam_pos} --out {anon_bam_pos} --fa {ref_pos}"
+    a = subprocess.run(bamboozle_command.split(),capture_output=True,text=True)
     content += f"Bamboozle command:\n"
     content += bamboozle_command
     content += f"\nBamboozle output:\n"
-#    content += a.stdout
+    content += a.stdout
     content += "\n\n"
 
     with open(method_mapping_file, 'w') as file:
