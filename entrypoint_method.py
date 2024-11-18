@@ -5,6 +5,7 @@ import subprocess
 def run_method(output_dir, name, input_files, parameters):
     # Create the output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
+    method_mapping_file = os.path.join(output_dir, f'{name}.model.out.txt')
 
     # Run Cellranger ctrl
     ref_dir = f"01_references/refdata-gex-CRCh38-2024-A"
@@ -15,8 +16,16 @@ def run_method(output_dir, name, input_files, parameters):
     #cr_command_1 += f" --output-dir {output_dir} --transcriptome 01_references/refdata-gex-GRCh38-2024-A"
     cr_command_1 += f" --output-dir {cr_outdir} --transcriptome {ref_dir}"
     cr_command_1 += f" --create-bam true --expect-cells 15000 --localcores 4 --localmem 4"
+
+    content = f"This is the cellranger command\n{cr_command}\n\n"
+    with open(method_mapping_file, 'w') as file:
+        file.write(content)
+
     a = subprocess.run(cr_command_1.split(),capture_output=True,text=True)
     content = f"This is the output from subprocess.run on cellranger\n{a.stdout}\n\n"
+
+    with open(method_mapping_file, 'w') as file:
+        file.write(content)
 
     # Run Bamboozle case
     bam_pos = f"{cr_outdir}"+f"/out/XXX"
@@ -24,6 +33,10 @@ def run_method(output_dir, name, input_files, parameters):
     bamboozle_command = f"BAMboozle --bam {bam_pos} $out --fa {ref_pos}"
     a = subprocess.run(bamboozle_command.split(),capture_output=True,text=True)
     content += f"Output from bamboozle\n{a.stdout}\n\n"
+
+    with open(method_mapping_file, 'w') as file:
+        file.write(content)
+
 
     # Run Bamtofastq case
     anon_bam_pos = f"{cr_outdir}"+f"/out/XXX"
@@ -39,8 +52,6 @@ def run_method(output_dir, name, input_files, parameters):
 #    content += "\n\n"
 
 #    content = concatenate_input_content(input_files)
-
-    method_mapping_file = os.path.join(output_dir, f'{name}.model.out.txt')
 
     with open(method_mapping_file, 'w') as file:
         file.write(content)
