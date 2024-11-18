@@ -43,7 +43,7 @@ def run_method(output_dir, name, input_files, parameters):
 
     # Run Bamtofastq case
     anon_fastq_pos = f"{output_dir}/anon_fastqs"
-    os.makedirs(anon_outdir,exist_ok=True)
+    os.makedirs(anon_fastq_pos,exist_ok=True)
     bamtofastq_command = f"bamtofastq --nthreads=16 {anon_bam_pos} {anon_fastq_pos}"
     content += f"Bamtofastq command:\n{bamtofastq_command}\n"
     a = subprocess.run(bamtofastq_command.split(),capture_output=True,text=True)
