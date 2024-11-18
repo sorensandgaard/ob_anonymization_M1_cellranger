@@ -21,17 +21,17 @@ def run_method(output_dir, name, input_files, parameters):
     with open(method_mapping_file, 'w') as file:
         file.write(content)
 
-    a = subprocess.run(cr_command_1.split(),capture_output=True,text=True)
+    #a = subprocess.run(cr_command_1.split(),capture_output=True,text=True)
     content += f"Cellranger output:\n"
-    content += a.stdout
+    #content += a.stdout
     content += "\n\n"
 
     with open(method_mapping_file, 'w') as file:
         file.write(content)
 
     # Run Bamboozle case
-    bam_pos = f"{cr_outdir}"+f"/out/XXX"
-    ref_pos = f"{ref_dir}"+f"/XXX.fa"
+    bam_pos = f"{cr_outdir}"+f"/outs/possorted_genome_bam.bam"
+    ref_pos = f"{ref_dir}"+f"/fasta/genome.fa"
     bamboozle_command = f"BAMboozle --bam {bam_pos} $out --fa {ref_pos}"
     a = subprocess.run(bamboozle_command.split(),capture_output=True,text=True)
     content += f"Bamboozle output:\n"
