@@ -2,65 +2,45 @@ import argparse
 import os
 import subprocess
 
-def concatenate_input_content(input_files):
-    concatenated_content = ""  # Initialize an empty string to hold the concatenated content
-
-    # Iterate over each input file
-    for input_file in input_files:
-        # Open each input file in read mode and read its content
-        with open(input_file, 'r') as file:
-            # Read the content of the input file and append it to the concatenated_content string
-            concatenated_content += file.read()
-            # Optionally, you can add a newline between the content of each file
-            concatenated_content += '\n'
-
-    return concatenated_content
-
-
 def run_method(output_dir, name, input_files, parameters):
     # Create the output directory if it doesn't exist
-    output_dir += "/cellranger_out"
     os.makedirs(output_dir, exist_ok=True)
 
     # Run Cellranger ctrl
-    # Figure out how to extract reference genome: /data/refdata-gex-GRCh38-2024-A"
+    ref_dir = f"01_references/refdata-gex-CRCh38-2024-A"
+    cr_outdir = f"{output_dir}"+f"/cellranger_out"
+    os.makedirs(cr_outdir)
 
     cr_command_1 = f"cellranger count --id testing --fastqs {input_files}"
-    cr_command_1 += f" --output-dir {output_dir} --transcriptome 01_references/refdata-gex-GRCh38-2024-A"
+    #cr_command_1 += f" --output-dir {output_dir} --transcriptome 01_references/refdata-gex-GRCh38-2024-A"
+    cr_command_1 += f" --output-dir {cr_outdir} --transcriptome {ref_dir}"
     cr_command_1 += f" --create-bam true --expect-cells 15000 --localcores 4 --localmem 4"
-
-    # orig_fastq_path="/home/projects/dtu_00062/people/sorsan/test1/short_data/"
-    # orig_out="/home/projects/dtu_00062/people/sorsan/test1/short_orig_processed_hg38-2024-A"
-
-    # cellranger count --id short_sample_orig --fastqs $orig_fastq_path --output-dir $orig_out
-    # --transcriptome $transcriptome_ref --create-bam true --expect-cells 15000 --localcores 28 --localmem 128
-
-    # Run Cellranger case 1
-    # a = subprocess.run(["cellranger","count","--help"],capture_output=True,text=True)
     a = subprocess.run(cr_command_1.split(),capture_output=True,text=True)
-
-
-    content = f"This is the output from subprocess.run\n"
-    content += a.stdout
-    content += "\n\n"
+    content = f"This is the output from subprocess.run on cellranger\n{a.stdout}\n\n"
 
     # Run Bamboozle case
+    bam_pos = f"{cr_outdir}"+f"/out/XXX"
+    ref_pos = f"{ref_dir}"+f"/XXX.fa"
+    bamboozle_command = f"BAMboozle --bam {bam_pos} $out --fa {ref_pos}"
+    a = subprocess.run(bamboozle_command.split(),capture_output=True,text=True)
+    content += f"Output from bamboozle\n{a.stdout}\n\n"
 
     # Run Bamtofastq case
+    anon_bam_pos = f"{cr_outdir}"+f"/out/XXX"
+    anon_fastq_pos = f"{cr_outdir}"+f"/out/XXX"
+    bamtofastq_command = f"bamtofastq --nthreads=4 {anon_bam_pos} {anon_fastq_pos}"
+    a = subprocess.run(bamtofastq_command.split(),capture_output=True,text=True)
+    content += f"Output from bamtofastq\n{a.stdout}\n\n"
 
     # Run Cellranger case 2
 
-    content += f"This is the command to run cellranger on the first reference genome\n"
-    content += cr_command_1
-    content += "\n\n"
+#    content += f"This is the command to run cellranger on the first reference genome\n"
+#    content += cr_command_1
+#    content += "\n\n"
 
 #    content = concatenate_input_content(input_files)
 
     method_mapping_file = os.path.join(output_dir, f'{name}.model.out.txt')
-    content += f"Input files:\n\t"
-    content += input_files
-    content += f"\nOutput directory:\n\t"
-    content += output_dir
 
     with open(method_mapping_file, 'w') as file:
         file.write(content)
