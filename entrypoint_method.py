@@ -22,7 +22,9 @@ def run_method(output_dir, name, input_files, parameters):
         file.write(content)
 
     a = subprocess.run(cr_command_1.split(),capture_output=True,text=True)
-    content = f"This is the output from subprocess.run on cellranger\n{a.stdout}\n\n"
+    content += f"Cellranger output:\n"
+    content += a.stdout
+    content += "\n\n"
 
     with open(method_mapping_file, 'w') as file:
         file.write(content)
@@ -32,7 +34,9 @@ def run_method(output_dir, name, input_files, parameters):
     ref_pos = f"{ref_dir}"+f"/XXX.fa"
     bamboozle_command = f"BAMboozle --bam {bam_pos} $out --fa {ref_pos}"
     a = subprocess.run(bamboozle_command.split(),capture_output=True,text=True)
-    content += f"Output from bamboozle\n{a.stdout}\n\n"
+    content += f"Bamboozle output:\n"
+    content += a.stdout
+    content += "\n\n"
 
     with open(method_mapping_file, 'w') as file:
         file.write(content)
@@ -43,7 +47,9 @@ def run_method(output_dir, name, input_files, parameters):
     anon_fastq_pos = f"{cr_outdir}"+f"/out/XXX"
     bamtofastq_command = f"bamtofastq --nthreads=4 {anon_bam_pos} {anon_fastq_pos}"
     a = subprocess.run(bamtofastq_command.split(),capture_output=True,text=True)
-    content += f"Output from bamtofastq\n{a.stdout}\n\n"
+    content += f"Bamtofastq output:\n"
+    content += a.stdout
+    content += "\n\n"
 
     # Run Cellranger case 2
 
