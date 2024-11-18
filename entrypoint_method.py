@@ -8,7 +8,7 @@ def run_method(output_dir, name, input_files, parameters):
     method_mapping_file = os.path.join(output_dir, f'{name}.model.out.txt')
 
     # Run Cellranger ctrl
-    ref_dir = f"01_references/refdata-gex-CRCh38-2024-A"
+    ref_dir = f"01_references/refdata-gex-GRCh38-2024-A"
     cr_outdir = f"{output_dir}"+f"/cellranger_out"
     os.makedirs(cr_outdir, exist_ok=True)
 
