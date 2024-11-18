@@ -42,7 +42,7 @@ def run_method(output_dir, name, input_files, parameters):
         file.write(content)
 
     # Run Bamtofastq case
-    anon_outdir = f"{output_dir}/anon_fastqs"
+    anon_fastq_pos = f"{output_dir}/anon_fastqs"
     os.makedirs(anon_outdir,exist_ok=True)
     bamtofastq_command = f"bamtofastq --nthreads=16 {anon_bam_pos} {anon_fastq_pos}"
     content += f"Bamtofastq command:\n{bamtofastq_command}\n"
