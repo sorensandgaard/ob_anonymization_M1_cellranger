@@ -5,8 +5,7 @@ import subprocess
 def run_method(output_dir, name, input_files, parameters):
     # Create the output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
-    #method_mapping_file = os.path.join(output_dir, f'{name}.model.out.txt')
-    log_file = os.path.join(output_dir, f'log.txt')
+    log_file = os.path.join(output_dir, f'{name}.log.txt')
 
     # Run bamtofastq
     anon_fastq_pos = f"{output_dir}/anon_fastqs"
