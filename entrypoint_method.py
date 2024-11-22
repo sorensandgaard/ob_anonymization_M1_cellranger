@@ -5,58 +5,43 @@ import subprocess
 def run_method(output_dir, name, input_files, parameters):
     # Create the output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
-    method_mapping_file = os.path.join(output_dir, f'{name}.model.out.txt')
+    #method_mapping_file = os.path.join(output_dir, f'{name}.model.out.txt')
+    log_file = os.path.join(output_dir, f'log.txt')
+
+    # Run bamtofastq
+    anon_fastq_pos = f"{output_dir}/anon_fastqs"
+    bamtofastq_command = f"bamtofastq --nthreads=16 {input_file} {anon_fastq_pos}"
+    content += f"Bamtofastq command:\n{bamtofastq_command}\n"
+    # a = subprocess.run(bamtofastq_command.split(),capture_output=True,text=True)
+    # content += f"Bamtofastq output:\n{a.stdout}\n\n"
+
+    # Create dummy bamtofastq files
+    a = subprocess.run(f"mkdir {anon_fastq_pos}".split(),capture_output=True,text=True)
+    a = subprocess.run(f"mkdir {anon_fastq_pos}/H_tmp".split(),capture_output=True,text=True)
+    a = subprocess.run(f"touch {anon_fastq_pos}/H_tmp/test.fastq".split(),capture_output=True,text=True)
 
     # Run Cellranger ctrl
-    ref_dir = f"01_references/refdata-gex-GRCh38-2024-A"
+    ref_dir = f"01_references/{parameters[0]}"
     cr_outdir = f"{output_dir}/cellranger_out"
     os.makedirs(cr_outdir, exist_ok=True)
-
-    cr_command_1 = f"cellranger count --id testing --fastqs {input_files}"
-    #cr_command_1 += f" --output-dir {output_dir} --transcriptome 01_references/refdata-gex-GRCh38-2024-A"
-    cr_command_1 += f" --output-dir {cr_outdir} --transcriptome {ref_dir}"
-    cr_command_1 += f" --create-bam true --expect-cells 15000 --localcores 16 --localmem 56"
-
-    content = f"This is the cellranger command\n{cr_command_1}\n\n"
-    with open(method_mapping_file, 'w') as file:
-        file.write(content)
+    cr_command = f"cellranger count --id testing --fastqs {anon_fastq_pos}"
+    cr_command += f" --output-dir {cr_outdir} --transcriptome {ref_dir}"
+    cr_command += f" --create-bam true --expect-cells 15000 --localcores 16 --localmem 56"
+    content = f"This is the cellranger command\n{cr_command}\n\n"
 
     #a = subprocess.run(cr_command_1.split(),capture_output=True,text=True)
     content += f"Cellranger output:\n"
     #content += a.stdout
     content += "\n\n"
 
-    with open(method_mapping_file, 'w') as file:
-        file.write(content)
+    # Create dummy cellranger files
+    os.makedirs(f"{cr_outdir}/outs",exist_ok=True) # dummy creation
+    os.makedirs(f"{cr_outdir}/outs/filtered_feature_bc_matrix",exist_ok=True) # dummy creation
+    subprocess.run(f"cp {log_file} {cr_outdir}/outs/possorted_genome_bam.bam".split(),capture_output=True,text=True)
+    subprocess.run(f"touch {cr_outdir}/outs/filtered_feature_bc_matrix/test1.txt".split(),capture_output=True,text=True)
+    subprocess.run(f"touch {cr_outdir}/outs/filtered_feature_bc_matrix/test2.txt".split(),capture_output=True,text=True)
 
-    # Run Bamboozle case
-    bam_pos = f"{cr_outdir}/outs/possorted_genome_bam.bam"
-    ref_pos = f"{ref_dir}/fasta/genome.fa"
-    anon_bam_pos = f"{cr_outdir}/outs/bamboozled.bam"
-    bamboozle_command = f"BAMboozle --bam {bam_pos} --out {anon_bam_pos} --fa {ref_pos}"
-    content += f"Bamboozle command:\n{bamboozle_command}\n"
-    a = subprocess.run(bamboozle_command.split(),capture_output=True,text=True)
-    content += f"Bamboozle output:\n{a.stdout}\n\n"
-
-    with open(method_mapping_file, 'w') as file:
-        file.write(content)
-
-    # Run Bamtofastq case
-    anon_fastq_pos = f"{output_dir}/anon_fastqs"
-    bamtofastq_command = f"bamtofastq --nthreads=16 {anon_bam_pos} {anon_fastq_pos}"
-    content += f"Bamtofastq command:\n{bamtofastq_command}\n"
-    a = subprocess.run(bamtofastq_command.split(),capture_output=True,text=True)
-    content += f"Bamtofastq output:\n{a.stdout}\n\n"
-
-    # Run Cellranger case 2
-
-#    content += f"This is the command to run cellranger on the first reference genome\n"
-#    content += cr_command_1
-#    content += "\n\n"
-
-#    content = concatenate_input_content(input_files)
-
-    with open(method_mapping_file, 'w') as file:
+    with open(log_file, 'w') as file:
         file.write(content)
 
 
