@@ -40,6 +40,14 @@ def run_method(output_dir, name, input_file, parameters):
     subprocess.run(f"touch {cr_outdir}/outs/filtered_feature_bc_matrix/test1.txt".split(),capture_output=True,text=True)
     subprocess.run(f"touch {cr_outdir}/outs/filtered_feature_bc_matrix/test2.txt".split(),capture_output=True,text=True)
 
+    # Copy expression matrix to output folder
+    cp_matrix_command = f"cp -r {cr_outdir}/outs/filtered_feature_bc_matrix {output_dir}/."
+    a = subprocess.run(cp_matrix_command.split(),capture_output=True,text=True)
+
+    # Cleanup unnecessary cellranger files
+    cleanup_command = f"rm -rf {cr_outdir}"
+    a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
+
     with open(log_file, 'w') as file:
         file.write(content)
 
@@ -52,23 +60,11 @@ def main():
     parser.add_argument('--output_dir', type=str, help='output directory where method will store results.')
     parser.add_argument('--name', type=str, help='name of the dataset')
     parser.add_argument('--init_bam',type=str, help='anonymized_bam_file')
-#    parser.add_argument('--process.filtered', type=str, help='optional input file #1.', required=False)
-#    parser.add_argument('--data.counts', type=str, help='optional input file #1.', required=False)
-#    parser.add_argument('--data.meta', type=str, help='input file #2.')
-#    parser.add_argument('--data.data_specific_params', type=str, help='input file #3.')
 
     # Parse arguments
     args, extra_arguments = parser.parse_known_args()
 
     bam_file = getattr(args, 'init_bam')
-
-#    process_filtered_input = getattr(args, 'process.filtered')
-#    data_counts_input = getattr(args, 'data.counts')
-#    data_meta_input = getattr(args, 'data.meta')
-#    data_params_input = getattr(args, 'data.data_specific_params')
-
-#    assert process_filtered_input is not None or data_counts_input is not None, "At least one of the values must not be None"
-#    data_counts_input = process_filtered_input if process_filtered_input else data_counts_input
 
     # run_method(args.output_dir, args.name, input_files, extra_arguments)
     run_method(args.output_dir, args.name, bam_file, extra_arguments)
