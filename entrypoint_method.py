@@ -15,7 +15,7 @@ def run_method(output_dir, name, input_file, parameters):
     content += f"Bamtofastq output:\n{a.stdout}\n\n"
 
     # Find name of bamtofastq folder
-    a = subprocess.run("ls {anon_fastq_pos}".split(),capture_output=True,text=True)
+    a = subprocess.run(f"ls {anon_fastq_pos}".split(),capture_output=True,text=True)
     content += f"fastq foldername object: {a.stdout}\n"
     fastq_foldername = a.stdout[:-1]
     content += f"fastq foldername: {fastq_foldername}\n\n"
