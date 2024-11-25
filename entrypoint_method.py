@@ -22,8 +22,9 @@ def run_method(output_dir, name, input_file, parameters):
     # Run Cellranger ctrl
     ref_dir = f"01_references/{parameters[0]}"
     cr_outdir = f"{output_dir}/cellranger_out"
+    anon_fastq_pos_cr = f"{anon_fastq_pos}/{name}_first_align*"
     os.makedirs(cr_outdir, exist_ok=True)
-    cr_command = f"cellranger count --id testing --fastqs {anon_fastq_pos}"
+    cr_command = f"cellranger count --id {name}_second_align --fastqs {anon_fastq_pos_cr}"
     cr_command += f" --output-dir {cr_outdir} --transcriptome {ref_dir}"
     cr_command += f" --create-bam true --expect-cells 15000 --localcores 24 --localmem 100"
     content = f"This is the cellranger command\n{cr_command}\n\n"
