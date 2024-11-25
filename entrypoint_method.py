@@ -14,6 +14,10 @@ def run_method(output_dir, name, input_file, parameters):
     a = subprocess.run(bamtofastq_command.split(),capture_output=True,text=True)
     content += f"Bamtofastq output:\n{a.stdout}\n\n"
 
+    # Find name of bamtofastq folder
+    a = subprocess.run("ls {anon_fastq_pos}".split(),capture_output=True,text=True)
+    fastq_foldername = a.stdout[:-1]
+
     # Create dummy bamtofastq files
     # a = subprocess.run(f"mkdir {anon_fastq_pos}".split(),capture_output=True,text=True)
     # a = subprocess.run(f"mkdir {anon_fastq_pos}/H_tmp".split(),capture_output=True,text=True)
@@ -22,7 +26,7 @@ def run_method(output_dir, name, input_file, parameters):
     # Run Cellranger ctrl
     ref_dir = f"01_references/{parameters[0]}"
     cr_outdir = f"{output_dir}/cellranger_out"
-    anon_fastq_pos_cr = f"{anon_fastq_pos}/{name}_first_align*"
+    anon_fastq_pos_cr = f"{anon_fastq_pos}/{fastq_foldername}"
     os.makedirs(cr_outdir, exist_ok=True)
     cr_command = f"cellranger count --id {name}_second_align --fastqs {anon_fastq_pos_cr}"
     cr_command += f" --output-dir {cr_outdir} --transcriptome {ref_dir}"
