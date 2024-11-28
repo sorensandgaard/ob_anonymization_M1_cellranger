@@ -82,6 +82,7 @@ def run_method(output_dir, name, input_file, parameters):
     filtered_expr_pos = f"{cr_outdir}/outs/filtered_feature_bc_matrix"
     R_command = f"Rscript {script_R_file} {output_dir} {filtered_expr_pos}"
     a = subprocess.run(R_command.split(),capture_output=True,text=True)
+    content += f"R command:\n{R_command}\n"
     content += f"R script output:\n"
     content += a.stdout
     content += "\n\n"
