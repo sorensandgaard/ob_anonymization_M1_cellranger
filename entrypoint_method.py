@@ -3,13 +3,18 @@ import os
 import subprocess
 
 def run_method(output_dir, name, input_file, parameters):
+
+    bam_file = input_file[0]
+    R1_pos = input_file[1]
+    R2_pos = input_file[2]
+
     # Create the output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
     log_file = os.path.join(output_dir, f'{name}.log.txt')
 
     # Run bamtofastq
     anon_fastq_pos = f"{output_dir}/anon_fastqs"
-    bamtofastq_command = f"bamtofastq --nthreads=16 {input_file} {anon_fastq_pos}"
+    bamtofastq_command = f"bamtofastq --nthreads=16 {bam_file} {anon_fastq_pos}"
     content = f"Bamtofastq command:\n{bamtofastq_command}\n"
     # a = subprocess.run(bamtofastq_command.split(),capture_output=True,text=True)
     # content += f"Bamtofastq output:\n{a.stdout}\n\n"
@@ -74,6 +79,9 @@ def run_method(output_dir, name, input_file, parameters):
     # cleanup_command = f"rm -rf {cr_outdir}"
     # a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
 
+    content += f"R1 position: {R1_pos}"
+    content += f"R2 position: {R2_pos}"
+
     with open(log_file, 'w') as file:
         file.write(content)
 
@@ -97,7 +105,7 @@ def main():
     R2_pos = getattr(args, 'R2.counts')
 
     # run_method(args.output_dir, args.name, input_files, extra_arguments)
-    run_method(args.output_dir, args.name, bam_file, extra_arguments)
+    run_method(args.output_dir, args.name, [bam_file,R1_pos,R2_pos], extra_arguments)
 
 
 if __name__ == "__main__":
