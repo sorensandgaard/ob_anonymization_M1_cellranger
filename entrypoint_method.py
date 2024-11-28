@@ -1,6 +1,12 @@
 import argparse
 import os
+import requests
 import subprocess
+
+def create_file(out_filename,in_url):
+    r = requests.get(in_url, allow_redirects=True)
+    open(out_filename, 'wb').write(r.content)
+
 
 def run_method(output_dir, name, input_file, parameters):
 
