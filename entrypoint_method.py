@@ -86,11 +86,15 @@ def main():
     parser.add_argument('--output_dir', type=str, help='output directory where method will store results.')
     parser.add_argument('--name', type=str, help='name of the dataset')
     parser.add_argument('--init_bam',type=str, help='anonymized_bam_file')
+    parser.add_argument('--R1.counts',type=str, help='raw reads R1')
+    parser.add_argument('--R2.counts',type=str, help='raw reads R2')
 
     # Parse arguments
     args, extra_arguments = parser.parse_known_args()
 
     bam_file = getattr(args, 'init_bam')
+    R1_pos = getattr(args, 'R1.counts')
+    R2_pos = getattr(args, 'R2.counts')
 
     # run_method(args.output_dir, args.name, input_files, extra_arguments)
     run_method(args.output_dir, args.name, bam_file, extra_arguments)
