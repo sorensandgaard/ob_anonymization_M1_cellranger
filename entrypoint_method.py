@@ -5,8 +5,7 @@ import subprocess
 def run_method(output_dir, name, input_file, parameters):
 
     bam_file = input_file[0]
-    R1_pos = input_file[1]
-    R2_pos = input_file[2]
+    ctrl_fastq_pos = input_file[1]
 
     # Create the output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
@@ -33,9 +32,8 @@ def run_method(output_dir, name, input_file, parameters):
     # Run Cellranger case
     ref_dir = f"01_references/{parameters[0]}"
     cr_outdir = f"{output_dir}/cellranger_out"
-    anon_fastq_pos_cr = f"{anon_fastq_pos}/"
     os.makedirs(cr_outdir, exist_ok=True)
-    cr_command = f"cellranger count --id {name}_second_align --fastqs {anon_fastq_pos_cr}"
+    cr_command = f"cellranger count --id {name}_second_align --fastqs {anon_fastq_pos}"
     cr_command += f" --output-dir {cr_outdir} --transcriptome {ref_dir}"
     cr_command += f" --create-bam true --expect-cells 15000 --localcores 24 --localmem 100"
     content += f"This is the anonymous cellranger command\n{cr_command}\n\n"
@@ -54,8 +52,7 @@ def run_method(output_dir, name, input_file, parameters):
     # Run Cellranger ctrl
     cr_outdir_ctrl = f"ctrl_expr_mats/{name}/M1/{parameters[0]}"
     os.makedirs(cr_outdir_ctrl, exist_ok=True)
-    ctrl_fastq_pos_cr = f""
-    cr_command = f"cellranger count --id {name}_ctrl --fastqs {ctrl_fastq_pos_cr}"
+    cr_command = f"cellranger count --id {name}_ctrl --fastqs {ctrl_fastq_pos}"
     cr_command += f" --output-dir {cr_outdir_ctrl} --transcriptome {ref_dir}"
     cr_command += f" --create-bam true --expect-cells 15000 --localcores 24 --localmem 100"
     content += f"This is the control cellranger command\n{cr_command}\n\n"
@@ -79,9 +76,6 @@ def run_method(output_dir, name, input_file, parameters):
     # cleanup_command = f"rm -rf {cr_outdir}"
     # a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
 
-    content += f"R1 position: {R1_pos}"
-    content += f"R2 position: {R2_pos}"
-
     with open(log_file, 'w') as file:
         file.write(content)
 
@@ -103,9 +97,10 @@ def main():
     bam_file = getattr(args, 'init_bam')
     R1_pos = getattr(args, 'R1.counts')
     R2_pos = getattr(args, 'R2.counts')
+    ctrl_fastq_pos = os.path.dirname(R1_pos) + f"/"
 
     # run_method(args.output_dir, args.name, input_files, extra_arguments)
-    run_method(args.output_dir, args.name, [bam_file,R1_pos,R2_pos], extra_arguments)
+    run_method(args.output_dir, args.name, [bam_file,ctrl_fastq_pos], extra_arguments)
 
 
 if __name__ == "__main__":
