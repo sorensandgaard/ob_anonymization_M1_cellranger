@@ -11,14 +11,14 @@ def run_method(output_dir, name, input_file, parameters):
     anon_fastq_pos = f"{output_dir}/anon_fastqs"
     bamtofastq_command = f"bamtofastq --nthreads=16 {input_file} {anon_fastq_pos}"
     content = f"Bamtofastq command:\n{bamtofastq_command}\n"
-    a = subprocess.run(bamtofastq_command.split(),capture_output=True,text=True)
-    content += f"Bamtofastq output:\n{a.stdout}\n\n"
+    # a = subprocess.run(bamtofastq_command.split(),capture_output=True,text=True)
+    # content += f"Bamtofastq output:\n{a.stdout}\n\n"
 
     # Find name of bamtofastq folder
     # a = subprocess.run(f"ls {anon_fastq_pos}".split(),capture_output=True,text=True)
-    content += f"fastq foldername object: {a.stdout}\n"
+    # content += f"fastq foldername object: {a.stdout}\n"
     # fastq_foldername = a.stdout[:-1]
-    content += f"fastq foldername: {fastq_foldername}\n\n"
+    # content += f"fastq foldername: {fastq_foldername}\n\n"
 
     # Create dummy bamtofastq files
     a = subprocess.run(f"mkdir {anon_fastq_pos}".split(),capture_output=True,text=True)
