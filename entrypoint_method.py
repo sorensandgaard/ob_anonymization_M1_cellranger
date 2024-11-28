@@ -36,8 +36,8 @@ def run_method(output_dir, name, input_file, parameters):
     content += f"This is the cellranger command\n{cr_command}\n\n"
 
     # a = subprocess.run(cr_command.split(),capture_output=True,text=True)
-    # content += f"Cellranger output:\n"
-    content += a.stdout
+    content += f"Cellranger output:\n"
+    # content += a.stdout
     content += "\n\n"
 
     # Create dummy cellranger files
