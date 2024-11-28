@@ -75,7 +75,7 @@ def run_method(output_dir, name, input_file, parameters):
     subprocess.run(f"touch {cr_outdir_ctrl}/outs/filtered_feature_bc_matrix/test2.txt".split(),capture_output=True,text=True)
 
     # Convert cellranger output to seurat object
-    R_script_url = "https://raw.githubusercontent.com/sorensandgaard/ob_anonymization_P1_cellranger/main/initialize_seurat_object.R"
+    R_script_url = "https://raw.githubusercontent.com/sorensandgaard/ob_anonymization_M1_cellranger/main/initialize_seurat_object.R"
     script_R_file = os.path.join(output_dir, f'initialize_seurat_object.R')
     create_file(script_R_file,R_script_url)
 
