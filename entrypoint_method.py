@@ -68,6 +68,18 @@ def run_method(output_dir, name, input_file, parameters):
     subprocess.run(f"touch {cr_outdir_ctrl}/outs/filtered_feature_bc_matrix/test1.txt".split(),capture_output=True,text=True)
     subprocess.run(f"touch {cr_outdir_ctrl}/outs/filtered_feature_bc_matrix/test2.txt".split(),capture_output=True,text=True)
 
+    # Convert cellranger output to seurat object
+    R_script_url = "https://raw.githubusercontent.com/sorensandgaard/ob_anonymization_P1_cellranger/main/initialize_seurat_object.R"
+    script_R_file = os.path.join(output_dir, f'initialize_seurat_object.R')
+    create_file(script_R_file,R_script_url)
+
+    filtered_expr_pos = f"{cr_outdir}/outs/filtered_feature_bc_matrix"
+    R_command = f"Rscript {script_R_file} {output_dir} {filtered_expr_pos}"
+    a = subprocess.run(R_command.split(),capture_output=True,text=True)
+    content += f"R script output:\n"
+    content += a.stdout
+    content += "\n\n"
+
     # Copy expression matrix to output folder
     # cp_matrix_command = f"cp -r {cr_outdir}/outs/filtered_feature_bc_matrix {output_dir}/."
     # a = subprocess.run(cp_matrix_command.split(),capture_output=True,text=True)
