@@ -25,7 +25,7 @@ def run_method(output_dir, name, input_file, parameters):
     a = subprocess.run(f"mkdir {anon_fastq_pos}/H_tmp".split(),capture_output=True,text=True)
     a = subprocess.run(f"touch {anon_fastq_pos}/H_tmp/test.fastq".split(),capture_output=True,text=True)
 
-    # Run Cellranger ctrl
+    # Run Cellranger case
     ref_dir = f"01_references/{parameters[0]}"
     cr_outdir = f"{output_dir}/cellranger_out"
     anon_fastq_pos_cr = f"{anon_fastq_pos}/"
@@ -33,23 +33,42 @@ def run_method(output_dir, name, input_file, parameters):
     cr_command = f"cellranger count --id {name}_second_align --fastqs {anon_fastq_pos_cr}"
     cr_command += f" --output-dir {cr_outdir} --transcriptome {ref_dir}"
     cr_command += f" --create-bam true --expect-cells 15000 --localcores 24 --localmem 100"
-    content += f"This is the cellranger command\n{cr_command}\n\n"
+    content += f"This is the anonymous cellranger command\n{cr_command}\n\n"
 
     # a = subprocess.run(cr_command.split(),capture_output=True,text=True)
-    content += f"Cellranger output:\n"
+    # content += f"Cellranger output:\n"
     # content += a.stdout
-    content += "\n\n"
+    # content += "\n\n"
 
-    # Create dummy cellranger files
+    # Create dummy anon cellranger files
     os.makedirs(f"{cr_outdir}/outs",exist_ok=True) # dummy creation
     os.makedirs(f"{cr_outdir}/outs/filtered_feature_bc_matrix",exist_ok=True) # dummy creation
-    subprocess.run(f"cp {log_file} {cr_outdir}/outs/possorted_genome_bam.bam".split(),capture_output=True,text=True)
     subprocess.run(f"touch {cr_outdir}/outs/filtered_feature_bc_matrix/test1.txt".split(),capture_output=True,text=True)
     subprocess.run(f"touch {cr_outdir}/outs/filtered_feature_bc_matrix/test2.txt".split(),capture_output=True,text=True)
 
+    # Run Cellranger ctrl
+    cr_outdir_ctrl = f"ctrl_expr_mats/{name}/M1/{parameters[0]}"
+    os.makedirs(cr_outdir_ctrl, exist_ok=True)
+    ctrl_fastq_pos_cr = f""
+    cr_command = f"cellranger count --id {name}_ctrl --fastqs {ctrl_fastq_pos_cr}"
+    cr_command += f" --output-dir {cr_outdir_ctrl} --transcriptome {ref_dir}"
+    cr_command += f" --create-bam true --expect-cells 15000 --localcores 24 --localmem 100"
+    content += f"This is the control cellranger command\n{cr_command}\n\n"
+
+    # a = subprocess.run(cr_command.split(),capture_output=True,text=True)
+    # content += f"Cellranger output:\n"
+    # content += a.stdout
+    # content += "\n\n"
+
+    # Create dummy ctrl cellranger files
+    os.makedirs(f"{cr_outdir_ctrl}/outs",exist_ok=True) # dummy creation
+    os.makedirs(f"{cr_outdir_ctrl}/outs/filtered_feature_bc_matrix",exist_ok=True) # dummy creation
+    subprocess.run(f"touch {cr_outdir_ctrl}/outs/filtered_feature_bc_matrix/test1.txt".split(),capture_output=True,text=True)
+    subprocess.run(f"touch {cr_outdir_ctrl}/outs/filtered_feature_bc_matrix/test2.txt".split(),capture_output=True,text=True)
+
     # Copy expression matrix to output folder
-    cp_matrix_command = f"cp -r {cr_outdir}/outs/filtered_feature_bc_matrix {output_dir}/."
-    a = subprocess.run(cp_matrix_command.split(),capture_output=True,text=True)
+    # cp_matrix_command = f"cp -r {cr_outdir}/outs/filtered_feature_bc_matrix {output_dir}/."
+    # a = subprocess.run(cp_matrix_command.split(),capture_output=True,text=True)
 
     # Cleanup unnecessary cellranger files
     # cleanup_command = f"rm -rf {cr_outdir}"
