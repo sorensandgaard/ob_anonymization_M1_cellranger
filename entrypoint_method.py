@@ -15,20 +15,19 @@ def run_method(output_dir, name, input_file, parameters):
     content += f"Bamtofastq output:\n{a.stdout}\n\n"
 
     # Find name of bamtofastq folder
-    a = subprocess.run(f"ls {anon_fastq_pos}".split(),capture_output=True,text=True)
+    # a = subprocess.run(f"ls {anon_fastq_pos}".split(),capture_output=True,text=True)
     content += f"fastq foldername object: {a.stdout}\n"
-    fastq_foldername = a.stdout[:-1]
+    # fastq_foldername = a.stdout[:-1]
     content += f"fastq foldername: {fastq_foldername}\n\n"
 
     # Create dummy bamtofastq files
-    # a = subprocess.run(f"mkdir {anon_fastq_pos}".split(),capture_output=True,text=True)
-    # a = subprocess.run(f"mkdir {anon_fastq_pos}/H_tmp".split(),capture_output=True,text=True)
-    # a = subprocess.run(f"touch {anon_fastq_pos}/H_tmp/test.fastq".split(),capture_output=True,text=True)
+    a = subprocess.run(f"mkdir {anon_fastq_pos}".split(),capture_output=True,text=True)
+    a = subprocess.run(f"mkdir {anon_fastq_pos}/H_tmp".split(),capture_output=True,text=True)
+    a = subprocess.run(f"touch {anon_fastq_pos}/H_tmp/test.fastq".split(),capture_output=True,text=True)
 
     # Run Cellranger ctrl
     ref_dir = f"01_references/{parameters[0]}"
     cr_outdir = f"{output_dir}/cellranger_out"
-#    anon_fastq_pos_cr = f"{anon_fastq_pos}/{fastq_foldername}/"
     anon_fastq_pos_cr = f"{anon_fastq_pos}/"
     os.makedirs(cr_outdir, exist_ok=True)
     cr_command = f"cellranger count --id {name}_second_align --fastqs {anon_fastq_pos_cr}"
@@ -36,17 +35,17 @@ def run_method(output_dir, name, input_file, parameters):
     cr_command += f" --create-bam true --expect-cells 15000 --localcores 24 --localmem 100"
     content += f"This is the cellranger command\n{cr_command}\n\n"
 
-    a = subprocess.run(cr_command.split(),capture_output=True,text=True)
-    content += f"Cellranger output:\n"
+    # a = subprocess.run(cr_command.split(),capture_output=True,text=True)
+    # content += f"Cellranger output:\n"
     content += a.stdout
     content += "\n\n"
 
     # Create dummy cellranger files
-    # os.makedirs(f"{cr_outdir}/outs",exist_ok=True) # dummy creation
-    # os.makedirs(f"{cr_outdir}/outs/filtered_feature_bc_matrix",exist_ok=True) # dummy creation
-    # subprocess.run(f"cp {log_file} {cr_outdir}/outs/possorted_genome_bam.bam".split(),capture_output=True,text=True)
-    # subprocess.run(f"touch {cr_outdir}/outs/filtered_feature_bc_matrix/test1.txt".split(),capture_output=True,text=True)
-    # subprocess.run(f"touch {cr_outdir}/outs/filtered_feature_bc_matrix/test2.txt".split(),capture_output=True,text=True)
+    os.makedirs(f"{cr_outdir}/outs",exist_ok=True) # dummy creation
+    os.makedirs(f"{cr_outdir}/outs/filtered_feature_bc_matrix",exist_ok=True) # dummy creation
+    subprocess.run(f"cp {log_file} {cr_outdir}/outs/possorted_genome_bam.bam".split(),capture_output=True,text=True)
+    subprocess.run(f"touch {cr_outdir}/outs/filtered_feature_bc_matrix/test1.txt".split(),capture_output=True,text=True)
+    subprocess.run(f"touch {cr_outdir}/outs/filtered_feature_bc_matrix/test2.txt".split(),capture_output=True,text=True)
 
     # Copy expression matrix to output folder
     cp_matrix_command = f"cp -r {cr_outdir}/outs/filtered_feature_bc_matrix {output_dir}/."
