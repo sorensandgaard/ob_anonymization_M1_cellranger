@@ -9,4 +9,4 @@ data_input_dir <- args[2]
 data <- Read10X(data.dir = data_input_dir)
 seurat_object = CreateSeuratObject(counts = data)
 
-saveRDS(seurat_object,file = outfile_pos,sep="")
+saveRDS(seurat_object,file = outfile_pos)

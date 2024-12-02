@@ -60,13 +60,10 @@ def run_method(output_dir, name, input_file, parameters):
     R_command = f"Rscript {script_R_file} {outfile_pos} {filtered_expr_pos}"
     a = subprocess.run(R_command.split(),capture_output=True,text=True)
     content += f"R command:\n{R_command}\n"
-    content += f"R script output:\n"
-    content += a.stdout
-    content += "\n\n"
 
     # Cleanup unnecessary cellranger files
-    # cleanup_command = f"rm -rf {cr_outdir}"
-    # a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
+    cleanup_command = f"rm -rf {cr_outdir}"
+    a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
 
     # Create dummy anon cellranger files
     # os.makedirs(f"{cr_outdir}/outs",exist_ok=True) # dummy creation
@@ -96,13 +93,10 @@ def run_method(output_dir, name, input_file, parameters):
         R_command = f"Rscript {script_R_file} {outfile_pos} {filtered_expr_pos}"
         a = subprocess.run(R_command.split(),capture_output=True,text=True)
         content += f"R command:\n{R_command}\n"
-        content += f"R script output:\n"
-        content += a.stdout
-        content += "\n\n"
 
         # Cleanup unnecessary cellranger files
-        # cleanup_command = f"rm -rf {cr_outdir_ctrl}"
-        # a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
+        cleanup_command = f"rm -rf {cr_outdir_ctrl}"
+        a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
 
     # Move cellranger ctrl file to output folder
 
