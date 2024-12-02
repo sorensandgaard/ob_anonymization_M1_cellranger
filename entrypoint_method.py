@@ -98,7 +98,8 @@ def run_method(output_dir, name, input_file, parameters):
         cleanup_command = f"rm -rf {cr_outdir_ctrl}"
         a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
 
-    # Move cellranger ctrl file to output folder
+    # Copy cellranger ctrl file to output folder
+    cp_ctrl_command = f"cp {ctrl_dir}/{name}_ctrl.rds {output_dir}/."
 
     # Create dummy ctrl cellranger files
     # os.makedirs(f"{cr_outdir_ctrl}/outs",exist_ok=True) # dummy creation
