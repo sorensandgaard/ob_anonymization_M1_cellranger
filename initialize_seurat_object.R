@@ -13,4 +13,4 @@ data_input_dir <- args[2]
 data <- Read10X(data.dir = data_input_dir)
 seurat_object = CreateSeuratObject(counts = data)
 
-saveRDS(seurat_object,file = paste(output_dir,"/ctrl.rds",sep=""))
+saveRDS(seurat_object,file = paste(output_dir,"/anon_expr.rds",sep=""))

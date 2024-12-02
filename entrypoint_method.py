@@ -96,8 +96,8 @@ def run_method(output_dir, name, input_file, parameters):
     # a = subprocess.run(cp_matrix_command.split(),capture_output=True,text=True)
 
     # Cleanup unnecessary cellranger files
-    # cleanup_command = f"rm -rf {cr_outdir}"
-    # a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
+    cleanup_command = f"rm -rf {cr_outdir}"
+    a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
 
     with open(log_file, 'w') as file:
         file.write(content)
