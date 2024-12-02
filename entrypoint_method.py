@@ -17,6 +17,11 @@ def run_method(output_dir, name, input_file, parameters):
     os.makedirs(output_dir, exist_ok=True)
     log_file = os.path.join(output_dir, f'{name}.log.txt')
 
+    # Load R script to create seurat objects
+    R_script_url = "https://raw.githubusercontent.com/sorensandgaard/ob_anonymization_M1_cellranger/main/initialize_seurat_object.R"
+    script_R_file = os.path.join(output_dir, f'initialize_seurat_object.R')
+    create_file(script_R_file,R_script_url)
+
     # Run bamtofastq
     anon_fastq_pos = f"{output_dir}/anon_fastqs"
     bamtofastq_command = f"bamtofastq --nthreads=16 {bam_file} {anon_fastq_pos}"
@@ -49,6 +54,16 @@ def run_method(output_dir, name, input_file, parameters):
     content += a.stdout
     content += "\n\n"
 
+    # Convert cellranger case output to seurat object
+    filtered_expr_pos = f"{cr_outdir}/outs/filtered_feature_bc_matrix"
+    outfile_pos = f"{output_dir}/{name}_case.rds"
+    R_command = f"Rscript {script_R_file} {outfile_pos} {filtered_expr_pos}"
+    a = subprocess.run(R_command.split(),capture_output=True,text=True)
+    content += f"R command:\n{R_command}\n"
+    content += f"R script output:\n"
+    content += a.stdout
+    content += "\n\n"
+
     # Create dummy anon cellranger files
     # os.makedirs(f"{cr_outdir}/outs",exist_ok=True) # dummy creation
     # os.makedirs(f"{cr_outdir}/outs/filtered_feature_bc_matrix",exist_ok=True) # dummy creation
@@ -69,7 +84,15 @@ def run_method(output_dir, name, input_file, parameters):
     content += a.stdout
     content += "\n\n"
 
-    # Convert to seurat object here as well
+    # Convert ctrl cellranger output to seurat object
+    filtered_expr_pos = f"{cr_outdir_ctrl}/outs/filtered_feature_bc_matrix"
+    outfile_pos = f"{output_dir}/{name}_ctrl.rds"
+    R_command = f"Rscript {script_R_file} {outfile_pos} {filtered_expr_pos}"
+    a = subprocess.run(R_command.split(),capture_output=True,text=True)
+    content += f"R command:\n{R_command}\n"
+    content += f"R script output:\n"
+    content += a.stdout
+    content += "\n\n"
     ######################################################
 
     # Create dummy ctrl cellranger files
@@ -77,23 +100,6 @@ def run_method(output_dir, name, input_file, parameters):
     # os.makedirs(f"{cr_outdir_ctrl}/outs/filtered_feature_bc_matrix",exist_ok=True) # dummy creation
     # subprocess.run(f"touch {cr_outdir_ctrl}/outs/filtered_feature_bc_matrix/test1.txt".split(),capture_output=True,text=True)
     # subprocess.run(f"touch {cr_outdir_ctrl}/outs/filtered_feature_bc_matrix/test2.txt".split(),capture_output=True,text=True)
-
-    # Convert cellranger output to seurat object
-    R_script_url = "https://raw.githubusercontent.com/sorensandgaard/ob_anonymization_M1_cellranger/main/initialize_seurat_object.R"
-    script_R_file = os.path.join(output_dir, f'initialize_seurat_object.R')
-    create_file(script_R_file,R_script_url)
-
-    filtered_expr_pos = f"{cr_outdir}/outs/filtered_feature_bc_matrix"
-    R_command = f"Rscript {script_R_file} {output_dir} {filtered_expr_pos}"
-    a = subprocess.run(R_command.split(),capture_output=True,text=True)
-    content += f"R command:\n{R_command}\n"
-    content += f"R script output:\n"
-    content += a.stdout
-    content += "\n\n"
-
-    # Copy expression matrix to output folder
-    # cp_matrix_command = f"cp -r {cr_outdir}/outs/filtered_feature_bc_matrix {output_dir}/."
-    # a = subprocess.run(cp_matrix_command.split(),capture_output=True,text=True)
 
     # Cleanup unnecessary cellranger files
     cleanup_command = f"rm -rf {cr_outdir}"
