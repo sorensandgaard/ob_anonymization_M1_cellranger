@@ -21,19 +21,19 @@ def run_method(output_dir, name, input_file, parameters):
     anon_fastq_pos = f"{output_dir}/anon_fastqs"
     bamtofastq_command = f"bamtofastq --nthreads=16 {bam_file} {anon_fastq_pos}"
     content = f"Bamtofastq command:\n{bamtofastq_command}\n"
-    # a = subprocess.run(bamtofastq_command.split(),capture_output=True,text=True)
-    # content += f"Bamtofastq output:\n{a.stdout}\n\n"
+    a = subprocess.run(bamtofastq_command.split(),capture_output=True,text=True)
+    content += f"Bamtofastq output:\n{a.stdout}\n\n"
 
     # Find name of bamtofastq folder
-    # a = subprocess.run(f"ls {anon_fastq_pos}".split(),capture_output=True,text=True)
-    # content += f"fastq foldername object: {a.stdout}\n"
-    # fastq_foldername = a.stdout[:-1]
-    # content += f"fastq foldername: {fastq_foldername}\n\n"
+    a = subprocess.run(f"ls {anon_fastq_pos}".split(),capture_output=True,text=True)
+    content += f"fastq foldername object: {a.stdout}\n"
+    fastq_foldername = a.stdout[:-1]
+    content += f"fastq foldername: {fastq_foldername}\n\n"
 
     # Create dummy bamtofastq files
-    a = subprocess.run(f"mkdir {anon_fastq_pos}".split(),capture_output=True,text=True)
-    a = subprocess.run(f"mkdir {anon_fastq_pos}/H_tmp".split(),capture_output=True,text=True)
-    a = subprocess.run(f"touch {anon_fastq_pos}/H_tmp/test.fastq".split(),capture_output=True,text=True)
+    # a = subprocess.run(f"mkdir {anon_fastq_pos}".split(),capture_output=True,text=True)
+    # a = subprocess.run(f"mkdir {anon_fastq_pos}/H_tmp".split(),capture_output=True,text=True)
+    # a = subprocess.run(f"touch {anon_fastq_pos}/H_tmp/test.fastq".split(),capture_output=True,text=True)
 
     # Run Cellranger case
     ref_dir = f"01_references/{parameters[0]}"
@@ -44,18 +44,19 @@ def run_method(output_dir, name, input_file, parameters):
     cr_command += f" --create-bam true --expect-cells 15000 --localcores 24 --localmem 100"
     content += f"This is the anonymous cellranger command\n{cr_command}\n\n"
 
-    # a = subprocess.run(cr_command.split(),capture_output=True,text=True)
-    # content += f"Cellranger output:\n"
-    # content += a.stdout
-    # content += "\n\n"
+    a = subprocess.run(cr_command.split(),capture_output=True,text=True)
+    content += f"Cellranger output:\n"
+    content += a.stdout
+    content += "\n\n"
 
     # Create dummy anon cellranger files
-    os.makedirs(f"{cr_outdir}/outs",exist_ok=True) # dummy creation
-    os.makedirs(f"{cr_outdir}/outs/filtered_feature_bc_matrix",exist_ok=True) # dummy creation
-    subprocess.run(f"touch {cr_outdir}/outs/filtered_feature_bc_matrix/test1.txt".split(),capture_output=True,text=True)
-    subprocess.run(f"touch {cr_outdir}/outs/filtered_feature_bc_matrix/test2.txt".split(),capture_output=True,text=True)
+    # os.makedirs(f"{cr_outdir}/outs",exist_ok=True) # dummy creation
+    # os.makedirs(f"{cr_outdir}/outs/filtered_feature_bc_matrix",exist_ok=True) # dummy creation
+    # subprocess.run(f"touch {cr_outdir}/outs/filtered_feature_bc_matrix/test1.txt".split(),capture_output=True,text=True)
+    # subprocess.run(f"touch {cr_outdir}/outs/filtered_feature_bc_matrix/test2.txt".split(),capture_output=True,text=True)
 
     # Run Cellranger ctrl
+    # If cellranger file doesn't already exist: #########
     cr_outdir_ctrl = f"ctrl_expr_mats/{name}/M1/{parameters[0]}"
     os.makedirs(cr_outdir_ctrl, exist_ok=True)
     cr_command = f"cellranger count --id {name}_ctrl --fastqs {ctrl_fastq_pos}"
@@ -63,16 +64,19 @@ def run_method(output_dir, name, input_file, parameters):
     cr_command += f" --create-bam true --expect-cells 15000 --localcores 24 --localmem 100"
     content += f"This is the control cellranger command\n{cr_command}\n\n"
 
-    # a = subprocess.run(cr_command.split(),capture_output=True,text=True)
-    # content += f"Cellranger output:\n"
-    # content += a.stdout
-    # content += "\n\n"
+    a = subprocess.run(cr_command.split(),capture_output=True,text=True)
+    content += f"Cellranger output:\n"
+    content += a.stdout
+    content += "\n\n"
+
+    # Convert to seurat object here as well
+    ######################################################
 
     # Create dummy ctrl cellranger files
-    os.makedirs(f"{cr_outdir_ctrl}/outs",exist_ok=True) # dummy creation
-    os.makedirs(f"{cr_outdir_ctrl}/outs/filtered_feature_bc_matrix",exist_ok=True) # dummy creation
-    subprocess.run(f"touch {cr_outdir_ctrl}/outs/filtered_feature_bc_matrix/test1.txt".split(),capture_output=True,text=True)
-    subprocess.run(f"touch {cr_outdir_ctrl}/outs/filtered_feature_bc_matrix/test2.txt".split(),capture_output=True,text=True)
+    # os.makedirs(f"{cr_outdir_ctrl}/outs",exist_ok=True) # dummy creation
+    # os.makedirs(f"{cr_outdir_ctrl}/outs/filtered_feature_bc_matrix",exist_ok=True) # dummy creation
+    # subprocess.run(f"touch {cr_outdir_ctrl}/outs/filtered_feature_bc_matrix/test1.txt".split(),capture_output=True,text=True)
+    # subprocess.run(f"touch {cr_outdir_ctrl}/outs/filtered_feature_bc_matrix/test2.txt".split(),capture_output=True,text=True)
 
     # Convert cellranger output to seurat object
     R_script_url = "https://raw.githubusercontent.com/sorensandgaard/ob_anonymization_M1_cellranger/main/initialize_seurat_object.R"
