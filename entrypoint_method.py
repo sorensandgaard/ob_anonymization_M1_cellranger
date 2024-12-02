@@ -100,6 +100,7 @@ def run_method(output_dir, name, input_file, parameters):
 
     # Copy cellranger ctrl file to output folder
     cp_ctrl_command = f"cp {ctrl_dir}/{name}_ctrl.rds {output_dir}/."
+    a = subprocess.run(cp_ctrl_command.split(), capture_output=True,text=True)
 
     # Create dummy ctrl cellranger files
     # os.makedirs(f"{cr_outdir_ctrl}/outs",exist_ok=True) # dummy creation
