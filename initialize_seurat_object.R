@@ -10,7 +10,7 @@ a <- data.frame(t1 = 1:5)
 a$t2 <- output_dir
 a$t3 <- data_input_dir
 
-data <- Read10X(data.dir = data_input_dir)
+data <- Read10X(data.dir = "Tmp_filtered_matrix")
 seurat_object = CreateSeuratObject(counts=data)
 
 # data <- Read10X(data.dir = data_input_dir)
