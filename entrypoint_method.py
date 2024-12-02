@@ -64,6 +64,10 @@ def run_method(output_dir, name, input_file, parameters):
     content += a.stdout
     content += "\n\n"
 
+    # Cleanup unnecessary cellranger files
+    cleanup_command = f"rm -rf {cr_outdir}"
+    a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
+
     # Create dummy anon cellranger files
     # os.makedirs(f"{cr_outdir}/outs",exist_ok=True) # dummy creation
     # os.makedirs(f"{cr_outdir}/outs/filtered_feature_bc_matrix",exist_ok=True) # dummy creation
@@ -72,7 +76,8 @@ def run_method(output_dir, name, input_file, parameters):
 
     # Run Cellranger ctrl
     # If cellranger file doesn't already exist: #########
-    cr_outdir_ctrl = f"ctrl_expr_mats/{name}/M1/{parameters[0]}"
+    ctrl_dir = f"ctrl_expr_mats/{name}/M1/{parameters[0]}"
+    cr_outdir_ctrl = f"{ctrl_dir}/cellranger"
     os.makedirs(cr_outdir_ctrl, exist_ok=True)
     cr_command = f"cellranger count --id {name}_ctrl --fastqs {ctrl_fastq_pos}"
     cr_command += f" --output-dir {cr_outdir_ctrl} --transcriptome {ref_dir}"
@@ -86,7 +91,7 @@ def run_method(output_dir, name, input_file, parameters):
 
     # Convert ctrl cellranger output to seurat object
     filtered_expr_pos = f"{cr_outdir_ctrl}/outs/filtered_feature_bc_matrix"
-    outfile_pos = f"{output_dir}/{name}_ctrl.rds"
+    outfile_pos = f"{ctrl_dir}/{name}_ctrl.rds"
     R_command = f"Rscript {script_R_file} {outfile_pos} {filtered_expr_pos}"
     a = subprocess.run(R_command.split(),capture_output=True,text=True)
     content += f"R command:\n{R_command}\n"
@@ -95,15 +100,15 @@ def run_method(output_dir, name, input_file, parameters):
     content += "\n\n"
     ######################################################
 
+    # Cleanup unnecessary cellranger files
+    cleanup_command = f"rm -rf {cr_outdir_ctrl}"
+    a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
+
     # Create dummy ctrl cellranger files
     # os.makedirs(f"{cr_outdir_ctrl}/outs",exist_ok=True) # dummy creation
     # os.makedirs(f"{cr_outdir_ctrl}/outs/filtered_feature_bc_matrix",exist_ok=True) # dummy creation
     # subprocess.run(f"touch {cr_outdir_ctrl}/outs/filtered_feature_bc_matrix/test1.txt".split(),capture_output=True,text=True)
     # subprocess.run(f"touch {cr_outdir_ctrl}/outs/filtered_feature_bc_matrix/test2.txt".split(),capture_output=True,text=True)
-
-    # Cleanup unnecessary cellranger files
-    cleanup_command = f"rm -rf {cr_outdir}"
-    a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
 
     with open(log_file, 'w') as file:
         file.write(content)
