@@ -62,8 +62,8 @@ def run_method(output_dir, name, input_file, parameters):
     content += f"R command:\n{R_command}\n"
 
     # Cleanup unnecessary cellranger files
-    cleanup_command = f"rm -rf {cr_outdir}"
-    a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
+    # cleanup_command = f"rm -rf {cr_outdir}"
+    # a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
 
     # Create dummy anon cellranger files
     # os.makedirs(f"{cr_outdir}/outs",exist_ok=True) # dummy creation
@@ -96,8 +96,8 @@ def run_method(output_dir, name, input_file, parameters):
         content += f"R command:\n{R_command}\n"
 
         # Cleanup unnecessary cellranger files
-        cleanup_command = f"rm -rf {cr_outdir_ctrl}"
-        a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
+        # cleanup_command = f"rm -rf {cr_outdir_ctrl}"
+        # a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
 
     # Copy cellranger ctrl file to output folder
     cp_ctrl_command = f"cp {ctrl_dir}/{name}_ctrl.rds {output_dir}/."
