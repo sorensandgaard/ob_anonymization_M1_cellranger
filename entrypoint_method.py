@@ -74,7 +74,8 @@ def run_method(output_dir, name, input_file, parameters):
     # Run Cellranger ctrl
     # If cellranger file doesn't already exist: #########
     ctrl_dir = f"ctrl_expr_mats/{name}/M1/{parameters[0]}"
-    if not os.path.isfile(f"{ctrl_dir}/{name}_ctrl.rds"):
+    if not os.path.isdir(ctrl_dir):
+#    if not os.path.isfile(f"{ctrl_dir}/{name}_ctrl.rds"):
         cr_outdir_ctrl = f"{ctrl_dir}/cellranger"
         os.makedirs(cr_outdir_ctrl, exist_ok=True)
         cr_command = f"cellranger count --id {name}_ctrl --fastqs {ctrl_fastq_pos}"
