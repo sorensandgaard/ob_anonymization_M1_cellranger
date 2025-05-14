@@ -10,7 +10,7 @@ def create_file(out_filename,in_url):
 
 def run_method(output_dir, name, input_file, parameters):
 
-    bam_file = input_file[0]
+    anon_fastq_pos = input_file[0]
     ctrl_fastq_pos = input_file[1]
 
     # Create the output directory if it doesn't exist
@@ -22,23 +22,11 @@ def run_method(output_dir, name, input_file, parameters):
     script_R_file = os.path.join(output_dir, f'initialize_seurat_object.R')
     create_file(script_R_file,R_script_url)
 
-    # Run bamtofastq
-    anon_fastq_pos = f"{output_dir}/anon_fastqs"
-    bamtofastq_command = f"bamtofastq --nthreads=16 {bam_file} {anon_fastq_pos}"
-    content = f"Bamtofastq command:\n{bamtofastq_command}\n"
-    a = subprocess.run(bamtofastq_command.split(),capture_output=True,text=True)
-    content += f"Bamtofastq output:\n{a.stdout}\n\n"
-
     # Find name of bamtofastq folder
-    a = subprocess.run(f"ls {anon_fastq_pos}".split(),capture_output=True,text=True)
-    content += f"fastq foldername object: {a.stdout}\n"
-    fastq_foldername = a.stdout[:-1]
-    content += f"fastq foldername: {fastq_foldername}\n\n"
-
-    # Create dummy bamtofastq files
-    # a = subprocess.run(f"mkdir {anon_fastq_pos}".split(),capture_output=True,text=True)
-    # a = subprocess.run(f"mkdir {anon_fastq_pos}/H_tmp".split(),capture_output=True,text=True)
-    # a = subprocess.run(f"touch {anon_fastq_pos}/H_tmp/test.fastq".split(),capture_output=True,text=True)
+    # a = subprocess.run(f"ls {anon_fastq_pos}".split(),capture_output=True,text=True)
+    # content += f"fastq foldername object: {a.stdout}\n"
+    # fastq_foldername = a.stdout[:-1]
+    # content += f"fastq foldername: {fastq_foldername}\n\n"
 
     # Run Cellranger case
     ref_dir = f"01_references/{parameters[0]}"
@@ -120,20 +108,23 @@ def main():
     # Add arguments
     parser.add_argument('--output_dir', type=str, help='output directory where method will store results.')
     parser.add_argument('--name', type=str, help='name of the dataset')
-    parser.add_argument('--anon.bam',type=str, help='anonymized_bam_file')
+    parser.add_argument('--anon.R1.counts',type=str, help='anonymous reads R1')
+    parser.add_argument('--anon.R2.counts',type=str, help='anonymous reads R2')
     parser.add_argument('--R1.counts',type=str, help='raw reads R1')
     parser.add_argument('--R2.counts',type=str, help='raw reads R2')
 
     # Parse arguments
     args, extra_arguments = parser.parse_known_args()
 
-    bam_file = getattr(args, 'anon.bam')
+    anon_R1_pos = getattr(args, 'anon.R1.counts')
+    anon_R2_pos = getattr(args, 'anon.R2.counts')
     R1_pos = getattr(args, 'R1.counts')
     R2_pos = getattr(args, 'R2.counts')
     ctrl_fastq_pos = os.path.dirname(R1_pos) + f"/"
+    anon_fastq_pos = os.path.dirname(anon_R1_pos) + f"/"
 
     # run_method(args.output_dir, args.name, input_files, extra_arguments)
-    run_method(args.output_dir, args.name, [bam_file,ctrl_fastq_pos], extra_arguments)
+    run_method(args.output_dir, args.name, [anon_fastq_pos,ctrl_fastq_pos], extra_arguments)
 
 
 if __name__ == "__main__":
