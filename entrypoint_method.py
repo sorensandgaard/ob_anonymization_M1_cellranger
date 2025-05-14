@@ -108,20 +108,21 @@ def main():
     # Add arguments
     parser.add_argument('--output_dir', type=str, help='output directory where method will store results.')
     parser.add_argument('--name', type=str, help='name of the dataset')
-    parser.add_argument('--anon.R1.counts',type=str, help='anonymous reads R1')
-    parser.add_argument('--anon.R2.counts',type=str, help='anonymous reads R2')
+    parser.add_argument('--anon.reads.path',type=str, help='txt file containing the path to the anonymized fastq files')
     parser.add_argument('--R1.counts',type=str, help='raw reads R1')
     parser.add_argument('--R2.counts',type=str, help='raw reads R2')
 
     # Parse arguments
     args, extra_arguments = parser.parse_known_args()
 
-    anon_R1_pos = getattr(args, 'anon.R1.counts')
-    anon_R2_pos = getattr(args, 'anon.R2.counts')
+    anon_read_path = getattr(args, 'anon.reads.path')
     R1_pos = getattr(args, 'R1.counts')
     R2_pos = getattr(args, 'R2.counts')
     ctrl_fastq_pos = os.path.dirname(R1_pos) + f"/"
-    anon_fastq_pos = os.path.dirname(anon_R1_pos) + f"/"
+
+    # Unpack anonymous read path
+    with open(anon_read_path, 'r') as infile:
+        anon_fastq_pos = infile.readline().strip()
 
     # run_method(args.output_dir, args.name, input_files, extra_arguments)
     run_method(args.output_dir, args.name, [anon_fastq_pos,ctrl_fastq_pos], extra_arguments)
