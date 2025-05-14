@@ -35,7 +35,7 @@ def run_method(output_dir, name, input_file, parameters):
     cr_command = f"cellranger count --id {name}_second_align --fastqs {anon_fastq_pos}"
     cr_command += f" --output-dir {cr_outdir} --transcriptome {ref_dir}"
     cr_command += f" --create-bam true --expect-cells 15000 --localcores 24 --localmem 100"
-    content += f"This is the anonymous cellranger command\n{cr_command}\n\n"
+    content = f"This is the anonymous cellranger command\n{cr_command}\n\n"
 
     a = subprocess.run(cr_command.split(),capture_output=True,text=True)
     content += f"Cellranger output:\n"
