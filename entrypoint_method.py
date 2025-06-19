@@ -28,11 +28,14 @@ def run_method(output_dir, name, input_file, parameters):
     # fastq_foldername = a.stdout[:-1]
     # content += f"fastq foldername: {fastq_foldername}\n\n"
 
+    # Run cellranger through a wrapper that loads the module
+    wrapper_cellranger = "envs/CellRanger-8.0.1_wrapper.sh"
+
     # Run Cellranger case
     ref_dir = f"01_references/{parameters[0]}"
     cr_outdir = f"{output_dir}/cellranger_out"
     os.makedirs(cr_outdir, exist_ok=True)
-    cr_command = f"cellranger count --id {name}_second_align --fastqs {anon_fastq_pos}"
+    cr_command = f"{wrapper_cellranger} count --id {name}_second_align --fastqs {anon_fastq_pos}"
     cr_command += f" --output-dir {cr_outdir} --transcriptome {ref_dir}"
     cr_command += f" --create-bam true --expect-cells 15000 --localcores 24 --localmem 100"
     content = f"This is the anonymous cellranger command\n{cr_command}\n\n"
@@ -66,7 +69,7 @@ def run_method(output_dir, name, input_file, parameters):
 #    if not os.path.isfile(f"{ctrl_dir}/{name}_ctrl.rds"):
         cr_outdir_ctrl = f"{ctrl_dir}/cellranger"
         os.makedirs(cr_outdir_ctrl, exist_ok=True)
-        cr_command = f"cellranger count --id {name}_ctrl --fastqs {ctrl_fastq_pos}"
+        cr_command = f"{wrapper_cellranger} count --id {name}_ctrl --fastqs {ctrl_fastq_pos}"
         cr_command += f" --output-dir {cr_outdir_ctrl} --transcriptome {ref_dir}"
         cr_command += f" --create-bam true --expect-cells 15000 --localcores 24 --localmem 100"
         content += f"This is the control cellranger command\n{cr_command}\n\n"
