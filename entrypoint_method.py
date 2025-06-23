@@ -46,9 +46,12 @@ def run_method(output_dir, name, input_file, parameters):
     content += "\n\n"
 
     # Convert cellranger case output to seurat object
+    # Run Rscript through a wrapper that loads the environment
+    wrapper_R = "envs/R_wrapper.sh"
+
     filtered_expr_pos = f"{cr_outdir}/outs/filtered_feature_bc_matrix"
     outfile_pos = f"{output_dir}/{name}_case.rds"
-    R_command = f"Rscript {script_R_file} {outfile_pos} {filtered_expr_pos}"
+    R_command = f"{wrapper_R} {script_R_file} {outfile_pos} {filtered_expr_pos}"
     a = subprocess.run(R_command.split(),capture_output=True,text=True)
     content += f"R command:\n{R_command}\n"
 
@@ -82,7 +85,7 @@ def run_method(output_dir, name, input_file, parameters):
         # Convert ctrl cellranger output to seurat object
         filtered_expr_pos = f"{cr_outdir_ctrl}/outs/filtered_feature_bc_matrix"
         outfile_pos = f"{ctrl_dir}/{name}_ctrl.rds"
-        R_command = f"Rscript {script_R_file} {outfile_pos} {filtered_expr_pos}"
+        R_command = f"{wrapper_R} {script_R_file} {outfile_pos} {filtered_expr_pos}"
         a = subprocess.run(R_command.split(),capture_output=True,text=True)
         content += f"R command:\n{R_command}\n"
 
