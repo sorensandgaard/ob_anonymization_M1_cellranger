@@ -29,7 +29,7 @@ def run_method(output_dir, name, input_file, parameters):
     # content += f"fastq foldername: {fastq_foldername}\n\n"
 
     # Run cellranger through a wrapper that loads the module
-    wrapper_cellranger = "envs/CellRanger-8.0.1_wrapper.sh"
+    wrapper_cellranger = f"envs/CellRanger-{parameters[1]}_wrapper.sh"
 
     # Run Cellranger case
     ref_dir = f"01_references/{parameters[0]}"
@@ -57,7 +57,7 @@ def run_method(output_dir, name, input_file, parameters):
 
     # Cleanup unnecessary cellranger files
     cleanup_command = f"rm -rf {cr_outdir}"
-    a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
+    # a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
 
     # Create dummy anon cellranger files
     # os.makedirs(f"{cr_outdir}/outs",exist_ok=True) # dummy creation
@@ -90,7 +90,7 @@ def run_method(output_dir, name, input_file, parameters):
         content += f"R command:\n{R_command}\n"
 
         # Cleanup unnecessary cellranger files
-        cleanup_command = f"rm -rf {cr_outdir_ctrl}"
+        # cleanup_command = f"rm -rf {cr_outdir_ctrl}"
         a = subprocess.run(cleanup_command.split(),capture_output=True,text=True)
 
     # Copy cellranger ctrl file to output folder
@@ -122,9 +122,10 @@ def main():
     args, extra_arguments = parser.parse_known_args()
 
     anon_read_path = getattr(args, 'anon.reads.path')
-    R1_pos = getattr(args, 'R1.counts')
-    R2_pos = getattr(args, 'R2.counts')
-    ctrl_fastq_pos = os.path.dirname(R1_pos) + f"/"
+    # R1_pos = getattr(args, 'R1.counts')
+    # R2_pos = getattr(args, 'R2.counts')
+    # ctrl_fastq_pos = os.path.dirname(R1_pos) + f"/"
+    ctrl_fastq_path = "data/"
 
     # Unpack anonymous read path
     with open(anon_read_path, 'r') as infile:
