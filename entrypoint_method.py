@@ -129,7 +129,7 @@ def main():
 
     # Unpack anonymous read path
     with open(anon_read_path, 'r') as infile:
-        anon_fastq_pos = infile.readline().strip()
+        anon_fastq_path = infile.readline().strip()
 
     # run_method(args.output_dir, args.name, input_files, extra_arguments)
     run_method(args.output_dir, args.name, [anon_fastq_path,ctrl_fastq_path], extra_arguments)
