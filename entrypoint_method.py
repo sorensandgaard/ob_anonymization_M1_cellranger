@@ -115,8 +115,8 @@ def main():
     parser.add_argument('--output_dir', type=str, help='output directory where method will store results.')
     parser.add_argument('--name', type=str, help='name of the dataset')
     parser.add_argument('--anon.reads.path',type=str, help='txt file containing the path to the anonymized fastq files')
-    parser.add_argument('--R1.counts',type=str, help='raw reads R1')
-    parser.add_argument('--R2.counts',type=str, help='raw reads R2')
+    # parser.add_argument('--R1.counts',type=str, help='raw reads R1')
+    # parser.add_argument('--R2.counts',type=str, help='raw reads R2')
 
     # Parse arguments
     args, extra_arguments = parser.parse_known_args()
@@ -132,7 +132,7 @@ def main():
         anon_fastq_pos = infile.readline().strip()
 
     # run_method(args.output_dir, args.name, input_files, extra_arguments)
-    run_method(args.output_dir, args.name, [anon_fastq_pos,ctrl_fastq_pos], extra_arguments)
+    run_method(args.output_dir, args.name, [anon_fastq_path,ctrl_fastq_path], extra_arguments)
 
 
 if __name__ == "__main__":
