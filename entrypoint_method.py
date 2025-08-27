@@ -8,7 +8,7 @@ def create_file(out_filename,in_url):
     open(out_filename, 'wb').write(r.content)
 
 
-def run_method(output_dir, name, input_file, parameters):
+def run_method(output_dir, name, input_file, refdir_arg, cr_version_arg, parameters):
 
     anon_fastq_pos = input_file[0]
     ctrl_fastq_pos = input_file[1]
@@ -29,15 +29,20 @@ def run_method(output_dir, name, input_file, parameters):
     # content += f"fastq foldername: {fastq_foldername}\n\n"
 
     # Run cellranger through a wrapper that loads the module
-    wrapper_cellranger = f"envs/CellRanger-{parameters[1]}_wrapper.sh"
+#    wrapper_cellranger = f"envs/CellRanger-{parameters[1]}_wrapper.sh"
+    wrapper_cellranger = f"envs/CellRanger-{cr_version_arg}_wrapper.sh"
 
     # Run Cellranger case
-    ref_dir = f"01_references/{parameters[0]}"
+#    ref_dir = f"01_references/{parameters[0]}"
+    ref_dir = f"01_references/{refdir_arg}"
     cr_outdir = f"{output_dir}/cellranger_out"
     os.makedirs(cr_outdir, exist_ok=True)
     cr_command = f"{wrapper_cellranger} count --id {name}_second_align --fastqs {anon_fastq_pos}"
     cr_command += f" --output-dir {cr_outdir} --transcriptome {ref_dir}"
-    cr_command += f" --create-bam true --expect-cells 15000 --localcores 24 --localmem 100"
+    cr_command += f" --expect-cells 15000 --localcores 24 --localmem 100"
+    if(cr_version_arg[0] == "8"):
+        cr_command += f"--create-bam true"
+
     content = f"This is the anonymous cellranger command\n{cr_command}\n\n"
 
     a = subprocess.run(cr_command.split(),capture_output=True,text=True)
@@ -67,7 +72,8 @@ def run_method(output_dir, name, input_file, parameters):
 
     # Run Cellranger ctrl
     # If cellranger file doesn't already exist: #########
-    ctrl_dir = f"ctrl_expr_mats/{name}/M1/{parameters[0]}"
+#    ctrl_dir = f"ctrl_expr_mats/{name}/M1/{parameters[0]}"
+    ctrl_dir = f"ctrl_expr_mats/{name}/M1/{refdir_arg}"
     if not os.path.isdir(ctrl_dir):
 #    if not os.path.isfile(f"{ctrl_dir}/{name}_ctrl.rds"):
         cr_outdir_ctrl = f"{ctrl_dir}/cellranger"
@@ -115,13 +121,15 @@ def main():
     parser.add_argument('--output_dir', type=str, help='output directory where method will store results.')
     parser.add_argument('--name', type=str, help='name of the dataset')
     parser.add_argument('--anon.reads.path',type=str, help='txt file containing the path to the anonymized fastq files')
-    # parser.add_argument('--R1.counts',type=str, help='raw reads R1')
-    # parser.add_argument('--R2.counts',type=str, help='raw reads R2')
+    parser.add_argument('--v', type=str, help='Cellranger version')
+    parser.add_argument('--r', type=str, help='Transcriptome reference')
 
     # Parse arguments
     args, extra_arguments = parser.parse_known_args()
 
     anon_read_path = getattr(args, 'anon.reads.path')
+    refdir_arg = getattr(args, 'r')
+    cr_version_arg = getattr(args, 'v')
     # R1_pos = getattr(args, 'R1.counts')
     # R2_pos = getattr(args, 'R2.counts')
     # ctrl_fastq_pos = os.path.dirname(R1_pos) + f"/"
@@ -132,7 +140,7 @@ def main():
         anon_fastq_path = infile.readline().strip()
 
     # run_method(args.output_dir, args.name, input_files, extra_arguments)
-    run_method(args.output_dir, args.name, [anon_fastq_path,ctrl_fastq_path], extra_arguments)
+    run_method(args.output_dir, args.name, [anon_fastq_path,ctrl_fastq_path], refdir_arg, cr_version_arg, extra_arguments)
 
 
 if __name__ == "__main__":
