@@ -41,7 +41,7 @@ def run_method(output_dir, name, input_file, refdir_arg, cr_version_arg, paramet
     cr_command += f" --output-dir {cr_outdir} --transcriptome {ref_dir}"
     cr_command += f" --expect-cells 15000 --localcores 24 --localmem 100"
     if(cr_version_arg[0] == "8"):
-        cr_command += f"--create-bam true"
+        cr_command += f" --create-bam true"
 
     content = f"This is the anonymous cellranger command\n{cr_command}\n\n"
 
@@ -80,7 +80,10 @@ def run_method(output_dir, name, input_file, refdir_arg, cr_version_arg, paramet
         os.makedirs(cr_outdir_ctrl, exist_ok=True)
         cr_command = f"{wrapper_cellranger} count --id {name}_ctrl --fastqs {ctrl_fastq_pos}"
         cr_command += f" --output-dir {cr_outdir_ctrl} --transcriptome {ref_dir}"
-        cr_command += f" --create-bam true --expect-cells 15000 --localcores 24 --localmem 100"
+        cr_command += f" --expect-cells 15000 --localcores 24 --localmem 100"
+        if(cr_version_arg[0] == "8"):
+            cr_command += f" --create-bam true"
+
         content += f"This is the control cellranger command\n{cr_command}\n\n"
 
         a = subprocess.run(cr_command.split(),capture_output=True,text=True)
